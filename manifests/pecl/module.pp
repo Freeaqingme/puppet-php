@@ -38,7 +38,7 @@ define php::pecl::module (
       exec { "pecl-${name}":
         command => "printf \"${auto_answer}\" | pecl -d preferred_state=${preferred_state} install ${name}",
         unless  => "pecl info ${name}",
-        require => Package["php-pear"],
+        require => Class['php::pear'],
       }
     }
   } # End Case
