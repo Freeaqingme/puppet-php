@@ -39,6 +39,7 @@ define php::pecl::module (
         command => "printf \"${auto_answer}\" | pecl -d preferred_state=${preferred_state} install ${name}",
         unless  => "pecl info ${name}",
         require => Class['php::pear'],
+        notify => Service[$service],
       }
     }
   } # End Case
