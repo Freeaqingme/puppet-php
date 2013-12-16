@@ -111,6 +111,10 @@ define php::pecl::module (
         logoutput => $pecl_exec_logoutput,
         path      => $path,
         require   => [ Class['php::pear'], Class['php::devel']],
+#        command => "printf \"${auto_answer}\" | pecl -d preferred_state=${preferred_state} install ${name}",
+#        unless  => "pecl info ${name}",
+#        require => Class['php::pear'],
+#        notify => Service[$service],
       }
       if $php::bool_augeas == true {
         php::augeas { "augeas-${name}":
