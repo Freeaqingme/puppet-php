@@ -42,6 +42,7 @@ class php::params {
   $package = $::operatingsystem ? {
     /(?i:Ubuntu|Debian|Mint)/ => 'php5',
     /(?i:SLES|OpenSuSE)/      => [ 'php5','apache2-mod_php5'],
+    /(?i:FreeBSD)/            => 'php5',
     default                   => 'php',
   }
 
@@ -92,6 +93,7 @@ class php::params {
   $source_dir = ''
   $source_dir_purge = false
   $augeas = false
+  $augeas_options = {}
   $template = ''
   $options = ''
   $version = 'present'

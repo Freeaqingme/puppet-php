@@ -48,7 +48,7 @@ define php::instance (
     }
   }
 
-  file { 'php.conf':
+  file { "php.conf-${name}":
     ensure  => $::php::manage_file,
     path    => $config_file,
     mode    => $::php::config_file_mode,
@@ -63,7 +63,7 @@ define php::instance (
 
   # The whole php configuration directory can be recursively overriden
   if $php::source_dir {
-    file { 'php.dir':
+    file { "php.dir-${name}":
       ensure  => directory,
       path    => $config_dir,
       require => Package['php'],
