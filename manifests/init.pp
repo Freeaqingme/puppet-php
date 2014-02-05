@@ -16,7 +16,7 @@
 # Define the general class behaviour and customizations
 #
 # [*my_class*]
-#   Name of a custom class to autoload to manage module's customizations
+#   Name of a custom class to autoload tao manage module's customizations
 #   If defined, php class will automatically "include $my_class"
 #   Can be defined also by the (top scope) variable $php_myclass
 #
@@ -149,6 +149,7 @@ class php (
   $source_dir_purge    = params_lookup( 'source_dir_purge' ),
   $template            = params_lookup( 'template' ),
   $augeas              = params_lookup( 'augeas' ),
+  $augeas_options      = {},
   $options             = params_lookup( 'options' ),
   $version             = params_lookup( 'version' ),
   $absent              = params_lookup( 'absent' ),
@@ -176,8 +177,6 @@ class php (
   ) inherits php::params {
 
   $bool_service_autorestart=any2bool($service_autorestart)
-  $bool_source_dir_purge=any2bool($source_dir_purge)
-  $bool_augeas=any2bool($augeas)
   $bool_absent=any2bool($absent)
   $bool_monitor=any2bool($monitor)
   $bool_puppi=any2bool($puppi)
@@ -211,66 +210,20 @@ class php (
     false => true,
   }
 
-  if ($php::source and $php::template) {
-    fail ('PHP: cannot set both source and template')
+  php::instance { 'default':
+    source           => $source,
+    template         => $template,
+    augeas           => $augeas,
+    package          => $package,
+    config_dir       => $config_dir,
+    source_dir       => $source_dir,
+    source_dir_purge => $source_dir_purge,
   }
-  if ($php::source and $php::bool_augeas) {
-    fail ('PHP: cannot set both source and augeas')
-  }
-  if ($php::template and $php::bool_augeas) {
-    fail ('PHP: cannot set both template and augeas')
-  }
-
-  $manage_file_source = $php::source ? {
-    ''        => undef,
-    default   => $php::source,
-  }
-
-  $manage_file_content = $php::template ? {
-    ''        => undef,
-    default   => template($php::template),
-  }
-
-  ### Managed resources
-  package { 'php':
-    ensure => $php::manage_package,
-    name   => $php::package,
-  }
-
-  file { 'php.conf':
-    ensure  => $php::manage_file,
-    path    => $php::config_file,
-    mode    => $php::config_file_mode,
-    owner   => $php::config_file_owner,
-    group   => $php::config_file_group,
-    require => Package['php'],
-    source  => $php::manage_file_source,
-    content => $php::manage_file_content,
-    replace => $php::manage_file_replace,
-    audit   => $php::manage_audit,
-  }
-
-  # The whole php configuration directory can be recursively overriden
-  if $php::source_dir {
-    file { 'php.dir':
-      ensure  => directory,
-      path    => $php::config_dir,
-      require => Package['php'],
-      source  => $php::source_dir,
-      recurse => true,
-      purge   => $php::bool_source_dir_purge,
-      force   => $php::bool_source_dir_purge,
-      replace => $php::manage_file_replace,
-      audit   => $php::manage_audit,
-    }
-  }
-
 
   ### Include custom class if $my_class is set
   if $php::my_class {
     include $php::my_class
   }
-
 
   ### Provide puppi data, if enabled ( puppi => true )
   if $php::bool_puppi == true {
