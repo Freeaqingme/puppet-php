@@ -72,7 +72,8 @@ class php::params {
   }
 
   $config_file_group = $::operatingsystem ? {
-    default => 'root',
+    'FreeBSD' => 'wheel',
+    default   => 'root',
   }
 
   $data_dir = $::operatingsystem ? {
