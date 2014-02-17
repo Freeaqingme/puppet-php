@@ -54,7 +54,7 @@ define php::instance (
     mode    => $::php::config_file_mode,
     owner   => $::php::config_file_owner,
     group   => $::php::config_file_group,
-    require => Package['php'],
+    require => Package[$package],
     source  => $manage_file_source,
     content => $manage_file_content,
     replace => $::php::manage_file_replace,
@@ -66,7 +66,7 @@ define php::instance (
     file { "php.dir-${name}":
       ensure  => directory,
       path    => $config_dir,
-      require => Package['php'],
+      require => Package[$package],
       source  => $source_dir,
       recurse => true,
       purge   => $bool_source_dir_purge,
