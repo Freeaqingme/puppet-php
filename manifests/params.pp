@@ -42,7 +42,7 @@ class php::params {
   $package = $::operatingsystem ? {
     /(?i:Ubuntu|Debian|Mint)/ => 'php5',
     /(?i:SLES|OpenSuSE)/      => [ 'php5','apache2-mod_php5'],
-    /(?i:FreeBSD)/            => 'php5',
+    /(?i:FreeBSD|Solaris)/    => 'php5',
     default                   => 'php',
   }
 
@@ -55,11 +55,13 @@ class php::params {
 
   $config_dir = $::operatingsystem ? {
     /(?i:Ubuntu|Debian|Mint|SLES|OpenSuSE)/ => '/etc/php5',
-    default                                   => '/etc/php.d',
+    /(?i:Solaris)/                          => '/etc/opt/csw/php5',
+    default                                 => '/etc/php.d',
   }
 
   $config_file = $::operatingsystem ? {
     /(?i:Ubuntu|Debian|Mint|SLES|OpenSuSE)/ => '/etc/php5/apache2/php.ini',
+    /(?i:Solaris)/                          => '/etc/opt/csw/php5/php.ini',
     default                                 => '/etc/php.ini',
   }
 
